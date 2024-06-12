@@ -7,6 +7,8 @@
 *.dll
 *.so
 *.dylib
+nat_broker
+nat_traversal
 
 # Test binary, built with `go test -c`
 *.test
