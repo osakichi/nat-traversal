@@ -10,10 +10,10 @@ import (
 )
 
 func main() {
-	host := "0.0.0.0:54321"
-	localName := "connector"
-	remoteName := "edge"
-	broker := "prgmr.nohohon.jp:54321"
+	host := "0.0.0.0:65432"
+	localName := "peerA"
+	remoteName := "peerZ"
+	broker := "prgmr.nohohon.jp:65432"
 
 	hostAddr, err := net.ResolveUDPAddr("udp", host)
 	if err != nil {
@@ -48,7 +48,7 @@ func main() {
 	}
 
 	go server(conn)
-	go client(conn, remoteAddr)
+	go client(conn, remoteAddr, localName)
 
 	for {
 		time.Sleep(10 * time.Second)
@@ -62,19 +62,19 @@ func server(conn *net.UDPConn) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Print("Receive from ", remoteAddr, " to ", conn.LocalAddr(), " : ", string(buf[:n]))
+		log.Print("Recv ", remoteAddr, " : ", string(buf[:n]))
 	}
 }
 
-func client(conn *net.UDPConn, remoteAddr *net.UDPAddr) {
+func client(conn *net.UDPConn, remoteAddr *net.UDPAddr, name string) {
 	n := 0
 	for {
-		msg := fmt.Sprintf("count %d", n)
+		msg := fmt.Sprintf("%s %d", name, n)
 		_, err := conn.WriteToUDP([]byte(msg), remoteAddr)
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Print("Send to ", remoteAddr, " from ", conn.LocalAddr().String(), " : ", msg)
+		log.Print("Send ", remoteAddr, " : ", msg)
 
 		n++
 
@@ -100,7 +100,7 @@ func regLocal(conn *net.UDPConn, name string, brokerAddr *net.UDPAddr) error {
 		log.Fatal("REG failed : ", name)
 	}
 
-	log.Print("REG success : ", name, " as ", col[1])
+	log.Print("REG success : ", name, " = ", col[1])
 
 	return nil
 }
@@ -123,7 +123,7 @@ func getRemote(conn *net.UDPConn, name string, brokerAddr *net.UDPAddr) (*net.UD
 		log.Fatal("GET failed : ", name)
 	}
 
-	log.Print("GET success : ", name, " as ", col[1])
+	log.Print("GET success : ", name, " = ", col[1])
 
 	remoteAddr, err = net.ResolveUDPAddr("udp", col[1])
 	if err != nil {

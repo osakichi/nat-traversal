@@ -36,7 +36,7 @@ func main() {
 		}
 
 		msg := string(buf[:n])
-		log.Print("Receive from ", remoteAddr, " to ", conn.LocalAddr(), " : ", msg)
+		log.Print("Recv ", remoteAddr, " : ", msg)
 
 		col := strings.Split(msg, " ")
 		if len(col) < 1 {
@@ -63,6 +63,6 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Print("Send to ", remoteAddr, " from ", conn.LocalAddr().String(), " : ", msg)
+		log.Print("Send ", remoteAddr, " : ", msg)
 	}
 }
