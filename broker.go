@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	local := "0.0.0.0:54321"
+	local := "0.0.0.0:65432"
 
 	localAddr, err := net.ResolveUDPAddr("udp", local)
 	if err != nil {
